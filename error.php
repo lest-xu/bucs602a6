@@ -17,7 +17,7 @@
     </main>
 
     <footer>
-        <p>&copy; <?php echo date("Y"); ?> Suresh Kalathur</p>
+        <p>&copy; <?php echo date("Y"); ?> BU CS 602 S2 Assignment 5 - Li Xu . All rights reserved.</p>
     </footer>
 </body>
 </html>
