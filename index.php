@@ -95,6 +95,10 @@ $statementCourses->closeCursor();
         </table>
 
         <p><a href="add_student_form.php">Add Student</a></p>
+         <!-- if there is a course id filter then show the link -->
+         <?php if ($courseID): ?>
+            <p><a href="index.php">View All Students</a></p>
+        <?php endif; ?>
 
         <p><a href="course_list.php">List Courses</a></p>    
 
