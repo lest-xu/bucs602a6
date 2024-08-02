@@ -1,10 +1,26 @@
 <?php
 require_once('database.php');
 
-// get all students from mysql
-$queryAllStudents = 'SELECT * FROM `sk_students` ORDER BY `sk_students`.`studentID` ASC';
+// get course ID from URL
+$courseID = isset($_GET['course_id']) ? $_GET['course_id'] : '';
 
-$statementStudents = $db->prepare($queryAllStudents);
+// default query to get all students for the queryStudents
+$queryStudents = 'SELECT * FROM `sk_students`';
+// add filter condition if a course_id is in the URL
+if ($courseID) {
+    $queryStudents .= ' WHERE `courseID` = :courseID';
+}
+// default ordering for the queryStudents
+$queryStudents .= ' ORDER BY `studentID` ASC';
+
+// prepare and execute the query for students
+$statementStudents = $db->prepare($queryStudents);
+
+// check if the course_id in the URL
+if ($courseID) {
+    $statementStudents->bindValue(':courseID', $courseID);
+}
+
 $statementStudents->execute();
 $students = $statementStudents->fetchAll();
 $statementStudents->closeCursor();
@@ -41,7 +57,7 @@ $statementCourses->closeCursor();
         <ul>
         <?php foreach ($courses as $key => $value): ?>
             <li>
-                <a href="?course_id=<?php echo $value['courseID']; ?>">
+                <a href="?course_id=<?php echo urlencode($value['courseID']); ?>">
                     <?php echo $value['courseID']; ?>
                 </a>
             </li>
