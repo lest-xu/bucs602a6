@@ -46,7 +46,7 @@ $statementStudents->closeCursor();
                 <th>Email</th>
                 <th>&nbsp;</th>
             </tr>
-            <!-- loop through all the students -->
+            <!-- loop through all the students  -->
             <?php foreach ($students as $key => $value): ?>
                 <tr>
                     <td><?php echo $value['firstName'] ?></td>
