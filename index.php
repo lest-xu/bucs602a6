@@ -1,5 +1,14 @@
 <?php
 require_once('database.php');
+
+// get all students from mysql
+$queryAllStudents = 'SELECT * FROM `sk_students` ORDER BY `sk_students`.`studentID` ASC';
+
+$statementStudents = $db->prepare($queryAllStudents);
+$statementStudents->execute();
+$students = $statementStudents->fetchAll();
+$statementStudents->closeCursor();
+
 ?> 
 
 <!DOCTYPE html>
@@ -37,7 +46,19 @@ require_once('database.php');
                 <th>Email</th>
                 <th>&nbsp;</th>
             </tr>
-
+            <!-- loop through all the students -->
+            <?php foreach ($students as $key => $value): ?>
+                <tr>
+                    <td><?php echo $value['firstName'] ?></td>
+                    <td><?php echo $value['lastName'] ?></td>
+                    <td><?php echo $value['email'] ?></td>
+                    <td>
+                        <form action="." method="post">
+                            <input type="submit" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
             
         </table>
 
