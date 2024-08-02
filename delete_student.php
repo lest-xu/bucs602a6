@@ -14,14 +14,9 @@ if ($studentID && $courseID) {
     $statement->execute();
     $statement->closeCursor();
 
-    // Display the Home page
-    include('index.php');
+   
 
-} else {
-    // show error page
-    $error = 'Someting went wrong, please try again!';
-    // display error page
-    include('error.php');
-}
-
+} 
+ // Display the Home page
+ include('index.php');
 ?>
