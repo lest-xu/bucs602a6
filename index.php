@@ -9,6 +9,14 @@ $statementStudents->execute();
 $students = $statementStudents->fetchAll();
 $statementStudents->closeCursor();
 
+// get all courses from mysql
+$queryAllcourses = 'SELECT * FROM `sk_courses` ORDER BY `sk_courses`.`courseID` ASC';
+
+$statementCourses = $db->prepare($queryAllcourses);
+$statementCourses->execute();
+$courses = $statementCourses->fetchAll();
+$statementCourses->closeCursor();
+
 ?> 
 
 <!DOCTYPE html>
@@ -27,11 +35,17 @@ $statementStudents->closeCursor();
     <center><h1>Student List</h1></center>
 
     <aside>
-        <!-- display a list of categories -->
+        <!-- display a list of Courses -->
         <h2>Courses</h2>
         <nav>
         <ul>
-            
+        <?php foreach ($courses as $key => $value): ?>
+            <li>
+                <a href="?course_id=<?php echo $value['courseID']; ?>">
+                    <?php echo $value['courseID']; ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
         </ul>
         </nav>          
     </aside>
@@ -54,7 +68,7 @@ $statementStudents->closeCursor();
                     <td><?php echo $value['email'] ?></td>
                     <td>
                         <form action="." method="post">
-                            
+
                             <input type="submit" value="Delete">
                         </form>
                     </td>
