@@ -67,8 +67,9 @@ $statementCourses->closeCursor();
                     <td><?php echo $value['lastName'] ?></td>
                     <td><?php echo $value['email'] ?></td>
                     <td>
-                        <form action="." method="post">
-
+                        <form action="delete_student.php" method="post">
+                            <input type="hidden" name="courseID" value="<?php echo $value['courseID']; ?>">
+                            <input type="hidden" name="studentID" value="<?php echo $value['studentID']; ?>">
                             <input type="submit" value="Delete">
                         </form>
                     </td>

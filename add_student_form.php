@@ -1,6 +1,12 @@
 <?php
 require('database.php');
+// get all courses from mysql
+$queryAllcourses = 'SELECT * FROM `sk_courses` ORDER BY `sk_courses`.`courseID` ASC';
 
+$statementCourses = $db->prepare($queryAllcourses);
+$statementCourses->execute();
+$courses = $statementCourses->fetchAll();
+$statementCourses->closeCursor();
 
 ?>
 <!DOCTYPE html>
@@ -22,7 +28,14 @@ require('database.php');
               id="add_student_form">
 
             <label>Course:</label>
-
+            <select name="courseID" id="courseID">
+            <?php foreach ($courses as $key => $value): ?>
+                <option value="<?php echo $value['courseID']; ?>">
+                    <?php echo $value['courseID']; ?>
+                </option>
+            <?php endforeach; ?>
+            </select>
+            <br/>
             
             <label>First Name:</label>
             <input type="text" name="first_name"><br>
