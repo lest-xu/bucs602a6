@@ -54,6 +54,7 @@ $statementStudents->closeCursor();
                     <td><?php echo $value['email'] ?></td>
                     <td>
                         <form action="." method="post">
+                            
                             <input type="submit" value="Delete">
                         </form>
                     </td>
