@@ -42,11 +42,11 @@ if ($action === 'courses') {
         $response = $students[$courseId];
     } else {
         // course not found return error response
-        $response = ['error' => 'Error: course not found!'];
+        $response = ['error' => 'Course not found!'];
     }
 } else {
     // return invalid action message
-    $response = ['error' => 'Error: invalid action!'];
+    $response = ['error' => 'Invalid action!'];
 }
 
 // set the appropriate content type
