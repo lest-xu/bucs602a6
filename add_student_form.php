@@ -31,7 +31,7 @@ $statementCourses->closeCursor();
             <select name="courseID" id="courseID">
             <?php foreach ($courses as $key => $value): ?>
                 <option value="<?php echo $value['courseID']; ?>">
-                    <?php echo $value['courseID']; ?>
+                    <?php echo $value['courseID'].'-'.$value['courseName']; ?>
                 </option>
             <?php endforeach; ?>
             </select>
