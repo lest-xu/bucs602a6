@@ -21,6 +21,26 @@ $statementCourses->execute();
 $courses = $statementCourses->fetchAll();
 $statementCourses->closeCursor();
 
+// map the course results to return only course ID and name
+$courses = array_map(function ($course) {
+    return [
+        'courseID' => $course['courseID'],
+        'courseName' => $course['courseName']
+    ];
+}, $courses);
+
+// map the student results to return student info
+$students = array_map(function ($item) {
+    return [
+        'studentID' => $item['studentID'],
+        'courseID' => $item['courseID'],
+        'firstName' => $item['firstName'],
+        'lastName' => $item['lastName'],
+        'email' => $item['email']
+    ];
+}, $students);
+
+
 // get the request format from url query
 $format = isset($_GET['format']) ? $_GET['format'] : 'json';
 // get the reuqest action from url query
@@ -36,12 +56,17 @@ if ($action === 'courses') {
     // return the courses
     $response = $courses;
 } else if ($action === 'students' && !empty($courseId)) {
-    // make sure the students enrolled to the course
-    if (array_key_exists($courseId, $students)) {
-        // found the course by id and return the students form the course
-        $response = $students[$courseId];
+
+    // make sure the students are enrolled in the course
+    $enrolledStudents = array_filter($students, function ($student) use ($courseId) {
+        return $student['courseID'] == $courseId;
+    });
+
+    if (!empty($enrolledStudents)) {
+        // found the course by ID and return the students from the course
+        $response = array_values($enrolledStudents);
     } else {
-        // course not found return error response
+        // course not found, return error response
         $response = ['error' => 'Course not found!'];
     }
 } else {
@@ -49,7 +74,8 @@ if ($action === 'courses') {
     $response = ['error' => 'Invalid action!'];
 }
 
-// set the appropriate content type
+
+// set the appropriate content type based on the format
 setContentType($format);
 
 // check if the request format is json or xml
@@ -58,7 +84,8 @@ if ($format === 'json') {
     echo toJsonFormat($response);
 } else if ($format === 'xml') {
     // set the output to xml format
-    echo toXmlFormat($response, 'response');
+    $xmlOutput = toXmlFormat($response, $action);
+    echo $xmlOutput;
 } else {
     // output error
     echo "Error: invalid format!";
@@ -66,7 +93,8 @@ if ($format === 'json') {
 
 /// HELPER Functions
 // 1. set the content type based on the format parameter
-function setContentType($format) {
+function setContentType($format)
+{
     // check the reuqest format and set teh context type for output
     if ($format === 'json') {
         header('Content-Type: application/json');
@@ -78,23 +106,27 @@ function setContentType($format) {
 }
 
 // 2. convert data to JSON format
-function toJsonFormat($data) {
+function toJsonFormat($data)
+{
     return json_encode($data, JSON_PRETTY_PRINT);
 }
 
 // 3. convert data to XML format
-function toXmlFormat($data, $rootElement = 'response', $xml = null) {
-    if ($xml === null) {
-        $xml = new SimpleXMLElement('<' . $rootElement . '/>');
-    }
-    foreach ($data as $key => $value) {
-        if (is_array($value)) {
-            toXmlFormat($value, $key, $xml->addChild($key));
-        } else {
-            $xml->addChild($key, $value);
+function toXmlFormat($data,  $action)
+{
+    // check the action if its students or courses and set the root element
+    $rootElement = ($action === 'courses') ? 'courses' : 'students';
+    // define the xml element
+    $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><' . $rootElement . '/>');
+    // loop through the resutls array
+    foreach ($data as $item) {
+        // set child element either student or course based on action using substr
+        $itemElement = $xml->addChild(substr($rootElement, 0, -1));
+        foreach ($item as $key => $value) {
+            // set attributes of the child element
+            $itemElement->addChild($key, htmlspecialchars($value));
         }
     }
+
     return $xml->asXML();
 }
-
-?>
