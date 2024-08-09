@@ -1,8 +1,21 @@
 <?php
 require_once('database.php');
 
+// get all courses from mysql
+$queryAllcourses = 'SELECT * FROM `sk_courses` ORDER BY `sk_courses`.`courseID` ASC';
+
+$statementCourses = $db->prepare($queryAllcourses);
+$statementCourses->execute();
+$courses = $statementCourses->fetchAll();
+$statementCourses->closeCursor();
+
 // get course ID from URL
 $courseID = isset($_GET['course_id']) ? $_GET['course_id'] : '';
+
+// set first couse as courseID when load
+if (!$courseID && $courses) {
+    $courseID = $courses[0]['courseID'];
+}
 
 // default query to get all students for the queryStudents
 $queryStudents = 'SELECT * FROM `sk_students`';
@@ -24,14 +37,6 @@ if ($courseID) {
 $statementStudents->execute();
 $students = $statementStudents->fetchAll();
 $statementStudents->closeCursor();
-
-// get all courses from mysql
-$queryAllcourses = 'SELECT * FROM `sk_courses` ORDER BY `sk_courses`.`courseID` ASC';
-
-$statementCourses = $db->prepare($queryAllcourses);
-$statementCourses->execute();
-$courses = $statementCourses->fetchAll();
-$statementCourses->closeCursor();
 
 ?> 
 
@@ -95,10 +100,6 @@ $statementCourses->closeCursor();
         </table>
 
         <p><a href="add_student_form.php">Add Student</a></p>
-         <!-- if there is a course id filter then show the link -->
-         <?php if ($courseID): ?>
-            <p><a href="index.php">View All Students</a></p>
-        <?php endif; ?>
 
         <p><a href="course_list.php">List Courses</a></p>    
 
